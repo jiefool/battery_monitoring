@@ -42,9 +42,14 @@ void loop() {
   readVoltage = analogRead(voltageInput)/40.92;
   printToLCD(0,2, (String)readVoltage + "V");
 
-  if(readVoltage < 5 && !once){
+  if(readVoltage < 23 && !once){
       sendSMS("Low battery, please charge.");
       once = true;
+  }
+
+    if(readVoltage >= 24 && once){
+      sendSMS("Battery full.");
+      once = false;
   }
   
   updateSerial();
