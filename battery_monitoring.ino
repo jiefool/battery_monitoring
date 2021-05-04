@@ -6,8 +6,10 @@ SoftwareSerial mySerial(3, 2);
 
 float readVoltage = 0;
 int voltageInput = A1;
-String mobileNumber = "+639564114308";
+String mobileNumber = "+639307010440";
 boolean once = false;
+float lowVoltage = 11.8;
+float fullyCharge = 11.9;
 
 
 void setup() {
@@ -42,12 +44,12 @@ void loop() {
   readVoltage = analogRead(voltageInput)/40.92;
   printToLCD(0,2, (String)readVoltage + "V");
 
-  if(readVoltage < 23 && !once){
+  if(readVoltage < lowVoltage && !once){
       sendSMS("Low battery, please charge.");
       once = true;
   }
 
-    if(readVoltage >= 24 && once){
+    if(readVoltage >= fullyCharge && once){
       sendSMS("Battery full.");
       once = false;
   }
