@@ -8,8 +8,8 @@ float readVoltage = 0;
 int voltageInput = A1;
 String mobileNumber = "+639307010440";
 boolean once = false;
-float lowVoltage = 11.8;
-float fullyCharge = 11.9;
+float lowVoltage = 11.4;
+float fullyCharge = 11.4;
 
 
 void setup() {
@@ -49,7 +49,7 @@ void loop() {
       once = true;
   }
 
-    if(readVoltage >= fullyCharge && once){
+    if(readVoltage > fullyCharge && once){
       sendSMS("Battery full.");
       once = false;
   }
