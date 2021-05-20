@@ -7,9 +7,16 @@ SoftwareSerial mySerial(3, 2);
 float readVoltage = 0;
 int voltageInput = A1;
 String mobileNumber = "+639307010440";
+//String mobileNumber = "+639564114308";
+int textFrequency = 3;
+int textCountLow = 0;
+int textCountFull = 0;
+float voltageAdjustment = 0.6; 
 boolean once = false;
-float lowVoltage = 11.4;
-float fullyCharge = 11.4;
+float lowVoltage = 11.2;
+float fullyCharge = 12.2;
+double textInterval = 120000;
+double textIntervalSet = 0;
 
 
 void setup() {
@@ -41,17 +48,25 @@ void setup() {
 }
 
 void loop() {
-  readVoltage = analogRead(voltageInput)/40.92;
+  readVoltage = (analogRead(voltageInput)/40.92) + voltageAdjustment;
   printToLCD(0,2, (String)readVoltage + "V");
 
-  if(readVoltage < lowVoltage && !once){
-      sendSMS("Low battery, please charge.");
-      once = true;
+  if(readVoltage < lowVoltage && textFrequency > textCountLow){
+      textCountFull = 0;
+      if(millis() >= textIntervalSet ){
+        textIntervalSet += textInterval;
+        sendSMS("Low battery, please charge.");
+        textCountLow++;
+      }
   }
 
-    if(readVoltage > fullyCharge && once){
-      sendSMS("Battery full.");
-      once = false;
+  if(readVoltage > fullyCharge && textFrequency > textCountFull){
+     textCountLow = 0;
+     if(millis() >= textIntervalSet ){
+        textIntervalSet += textInterval;
+        sendSMS("Battery full.");
+        textCountFull++;
+      }
   }
   
   updateSerial();
